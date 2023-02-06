@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import messaging from '@react-native-firebase/messaging';
-import { Alert, View,Text } from 'react-native';
+import { Alert, View,Text, Button } from 'react-native';
 
 
 
@@ -59,16 +59,38 @@ messaging().setBackgroundMessageHandler(async remoteMessage => {
 
 
 const unsubscribe = messaging().onMessage(async remoteMessage => {
-  Alert.alert('A new FCM message arrived!', JSON.stringify(remoteMessage));
+  Alert.alert('A new FCM message arrived!', JSON.stringify(remoteMessage.data.title));
 });
 
 return unsubscribe;
 
 
   },[])
+
+
+  const sendNotification = async()=>{
+    await fetch("https://fcm.googleapis.com/fcm/send", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `key=AAAAVXIYq00:APA91bHrr0TNcX1B45AuYo6fnISJxvSwGDaclxztKvJQGXYrx1gsFNHCpb3eYIKKYtyu4xOgRLinYy3tP45e4ilziC-rv49SE0BiL3XUVkPK1Iidc86Sd2iG3FQULicnN0x_h37tgF_x`,
+      },
+      body: JSON.stringify({
+        to: "fDYibcQ5RZKkJNPb0h4gs3:APA91bEwXz8NrPOXDCpcdv_i0epDHp3S6M876GIZpu3r7fUiZBt1_hdgKzTPMK3EJupF5272WOYBFD3el16kZ9X1NKf313UXp_-1uK474u31iffDZOkVAqQDOe-jRRTHNm3i_zv8Z4zH",
+        priority: "normal",
+        data: {
+          experienceId: "testnotification-devclient",
+          scopeKey: "testnotification-devclient",
+          title: "You've got order from gauresh",
+          message: "Please Check",
+        },
+      }),
+    });
+  }
   return (
     <View style={{marginTop:"50%"}}>
       <Text>Hello</Text>
+      <View style={{marginTop:"60%"}}><Button title='Send Notification' onPress={sendNotification}/></View>
     </View>
   )
 }
